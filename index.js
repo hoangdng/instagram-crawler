@@ -11,43 +11,38 @@ const download = require('image-downloader');
     const browser = await puppeteer.launch(launchOptions);
     console.log('Browser opened');
     const [page] = await browser.pages();
-    const url = "https://www.instagram.com/explore/tags/cat/";
+    const url = "https://www.instagram.com/himnha_/";
     await page.goto(url);
     console.log('Page loaded');
-    await autoScroll(page);
-    //window.scrollTo(0,document.body.scrollHeight);
-    const imgLinks = await page.evaluate(() => {
-        let imgElements = document.querySelectorAll('img.FFVAD');
-        imgElements = [...imgElements];
-        let imgLinks = imgElements.map(i => i.getAttribute('src'));
-        return imgLinks;
-    });
-    console.log(imgLinks);
+    var imgLinks = await autoScroll(page);
 
     //Tải các ảnh này về thư mục hiện tại
     await Promise.all(imgLinks.map(imgUrl => download.image({
         url: imgUrl,
         dest: "D:\\ThucHanh\\Web\\InstagramCrawler\\Pic"
     })));
-
-    //await browser.close();
+    await browser.close();
 })();
 
-async function autoScroll(page){
-    await page.evaluate(async () => {
-        await new Promise((resolve, reject) => {
+async function autoScroll(page) {
+    var result = await page.evaluate(() => {
+        return new Promise((resolve, reject) => {
             var totalHeight = 0;
             var distance = 200;
+            var imgLinks = [];
             var timer = setInterval(() => {
                 var scrollHeight = document.body.scrollHeight;
                 window.scrollBy(0, distance);
                 totalHeight += distance;
-
-                if(totalHeight >= scrollHeight || totalHeight == 1000){
+                let imgElements = document.querySelectorAll('img.FFVAD');
+                imgElements = [...imgElements];
+                imgLinks = imgLinks.concat(imgElements.map(i => i.getAttribute('src')));
+                if (totalHeight >= scrollHeight) {// || totalHeight == 1000){
                     clearInterval(timer);
-                    resolve();
+                    resolve(imgLinks);
                 }
             }, 500);
         });
     });
+    return result;
 }
