@@ -5,8 +5,8 @@ const download = require('image-downloader');
 (async () => {
     let launchOptions = {
         headless: false,
-        executablePath: "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
-        userDataDir: "C:\\Users\\nguye\\AppData\\Local\\Google\\Chrome\\User Data"
+        executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
+        userDataDir: "C:/Users/nguye/AppData/Local/Google/Chrome/User Data/Default"
     };
     const browser = await puppeteer.launch(launchOptions);
     console.log('Browser opened');
@@ -19,7 +19,7 @@ const download = require('image-downloader');
     //Tải các ảnh này về thư mục hiện tại
     await Promise.all(imgLinks.map(imgUrl => download.image({
         url: imgUrl,
-        dest: "D:\\ThucHanh\\Web\\InstagramCrawler\\Pic"
+        dest: "D:/Workspace/JavaScript/instagram-crawler/images-downloaded"
     })));
     await browser.close();
 })();
